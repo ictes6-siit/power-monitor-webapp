@@ -1,12 +1,5 @@
 $(function () {
 
-    Highcharts.Data.prototype.dateFormats['YYYY-MM-DDTHH:mm:ss.sssZ'] = {
-        regex: '^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2}).([0-9]{3})Z$',
-        parser: function (match) {
-            return Date.UTC(match[1], match[2] - 1, match[3], match[4], match[5], match[6], match[7]);
-        }
-    };
-
     $('#chart').highcharts('StockChart', {
         chart: {
             type: 'spline',
@@ -19,7 +12,7 @@ $(function () {
                     var phase1 = this.series[1];
                     var phase2 = this.series[2];
                     var phase3 = this.series[3];
-                    var average = this.series[0]
+                    var average = this.series[0];
                     var chart = this;
                     setInterval(function() {
                         var x = (new Date()).getTime(), // current time
@@ -34,6 +27,49 @@ $(function () {
                         chart.redraw();
                     }, 1000);
                 }
+            }
+        },
+        rangeSelector: {
+            buttons: [{
+                count: 1,
+                type: 'minute',
+                text: '1M'
+            }, {
+                count: 5,
+                type: 'minute',
+                text: '5M'
+            }, {
+                count: 30,
+                type: 'minute',
+                text: '30M'
+            }, {
+                count: 1,
+                type: 'hour',
+                text: '1H'
+            }, {
+                count: 1,
+                type: 'day',
+                text: '1D'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: true,
+            selected: 0,
+            inputDateFormat: '%Y-%m-%d,%H:%M:%S.%L',
+            inputEditDateFormat: '%Y-%m-%d,%H:%M:%S.%L',
+            inputBoxWidth: 180,
+            inputDateParser: function(value) {
+                value = value.split(/[-,:\.]/);
+                return Date.UTC(
+                    parseInt(value[0]),
+                    parseInt(value[1]) - 1,
+                    parseInt(value[2]),
+                    parseInt(value[3]),
+                    parseInt(value[4]),
+                    parseInt(value[5]),
+                    parseInt(value[6])
+                );
             }
         },
         scrollbar: {
