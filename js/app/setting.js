@@ -79,10 +79,11 @@ $(function () {
                 var enabled = $('#chkEnabled').prop('checked');
                 console.log(email + totalSag + perSecond + enabled);
 
+                $('#btnSaveChange').button('loading');
                 // update email setting
                 $.ajax({
                     type: "POST",
-                    url: "www.google.com",
+                    url: "http://www.aaaaa.com",
                     data: { email: email, totalSag: totalSag, perSecond: perSecond, enabled: enabled},
                     success: function(){
 
@@ -99,13 +100,15 @@ $(function () {
                             'Please try again later.');
                         $('#emailModal').modal('hide');
                     }
+                }).always(function () {
+                    $('#btnSaveChange').button('reset')
                 });
 
                 return false;
             }
         });
 
-        $('#saveChange').on('click', function(evt) {
+        $('#btnSaveChange').on('click', function(evt) {
             var $form = $('#formSetting').on('submit', function() {
                 return false;
             });
