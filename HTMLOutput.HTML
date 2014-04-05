@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Outputting Data to HTML</title>
+		<script language="JavaScript">
+			function WriteText()
+			{
+				document.getElementById("myText").innerHTML ="Clicked!"; //The innerHTML property 
+																		//provides access to the text 
+																		//within the <p>element.
+				document.getElementById("btnClickMe").setAttribute("value", "Clicked!"); // access the attribute within the 
+																						//control and make the change there
+			}
+		</script>
+	</head>
+	<body>
+		<h1>Creating HTML Element Output</h1>
+		<div><p id="myText">Change Me</p></div>
+		<div><input id="btnClickMe"
+			type="button"	
+			value="Click Me"
+			onclick="WriteText()" />
+		</div>
+	</body>
+</html>

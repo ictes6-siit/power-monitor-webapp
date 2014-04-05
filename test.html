@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>JavaScript Example</title>
+		<script language="JavaScript">
+			function SayHello()
+			{
+				alert("This is the SayHello() function!");
+			}
+		</script>
+		
+		<script src="concatString_time.js"></script>		<!-- Works like #include in C,C++ -->
+	</head>
+	<body>
+		<h1>My First JavaScript Example</h1>
+		<p>This is a JavaScript test.</p>
+		<input type="button"			
+			value="Call internal function"
+			onclick="SayHello()" />				<!-- this button call SayHello() function when clicked.-->
+			
+		<input type="button"			
+			value="Call external function"
+			onclick="ExternalSayHello()" />		<!-- this button call ExternalSayHello() function when clicked.
+												note that the function is in another file named external.js-->
+		
+		<script language="JavaScript"> // this script run immediately after the page is loaded. 
+			alert("Hello World");
+		</script>
+	</body>
+</html>	

@@ -14,42 +14,26 @@ $(function () {
                     var phase3 = this.series[3];
                     var average = this.series[0];
                     var chart = this;
-					var time = (new Date()).getTime()-50000;
-                    //alert(new Date(time-10000));
-						//source = 'http://toonja606.appspot.com/getdata/';
-					var source = 'http://localhost:5050/rms';
-                    console.log(time);
                     setInterval(function() {
-                        //time = (new Date()).getTime()-500;
 						$.ajax({
-							url : source+"/"+time,
+							url : 'http://toonja606.appspot.com/getdata',
 							success : function(data) {
-								//console.log(data);
-                                var length = data.rms.length;
-                                var skip = length / 10;
-                                var j;
-								console.log("# of received record: "+length);
-                                //console.log("Skip: "+skip);
-								//console.log(data.rms[0].pu1);
-                                if (length > 10) length = 10;
-                                for (var i=0;i<length;i++)
-                                {
-                                    j=parseInt(i*skip); 
-                                    var x = (new Date()).getTime(), // current time in UTC time
-                                    pu1 = data.rms[j].pu1/255*100,
-                                    pu2 = data.rms[j].pu2/255*100,
-                                    pu3 = data.rms[j].pu3/255*100,
-                                    avg = (pu1+pu2+pu3)/3;
-                                    phase1.addPoint([x, pu1], false, true);
-                                    phase2.addPoint([x, pu2], false, true);
-                                    phase3.addPoint([x, pu3], false, true);
-                                    average.addPoint([x, avg], false, true);
-                                    chart.redraw();
-                                }
+								console.log(data);
+								//console.log(data.pu1)								
+								/*var x = (new Date()).getTime(), // current time
+								pu1 = Math.random() * 100,
+								pu2 = Math.random() * 100,
+								pu3 = Math.random() * 100,
+								avg = (pu1+pu2+pu3)/3;
+								phase1.addPoint([x, pu1], false, true);
+								phase2.addPoint([x, pu2], false, true);
+								phase3.addPoint([x, pu3], false, true);
+								average.addPoint([x, avg], false, true);*/
+								chart.redraw();
+								
 							}
 						});
-                        time = (new Date()).getTime()-500;
-                    }, 500);
+                    }, 1000);
                 }
             }
         },
