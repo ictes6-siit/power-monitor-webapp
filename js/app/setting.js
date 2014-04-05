@@ -4,31 +4,35 @@ $(function () {
     $('#emailModal').on('show.bs.modal', function () {
         $.ajax({
             type: 'GET',
-            url: "http://demo7412509.mockable.io/email",
+            url: "http://power-monitor-cloud.appspot.com/email",
             success: function(emailSetting){
                 var emailList = [];
                 var tmp_query = '';
 
-                for(var i = 0; i < emailSetting.records.length; i++) {
-                    emailList.push(emailSetting.records[i].email);
-                }
+                emailList = emailSetting.results.email;
                 var updater = function(item) {
                     tmp_query = item;
-                    loadSavedData();
+                    var emailData = null;
+                    for(var i = 0; i < emailList.length; i++) {
+                        if(emailList[i].email.toLowerCase() == item) {
+                            loadSavedData(emailList[i]);
+                            break;
+                        }
+                    }
+
                     return item;
                 };
                 var matcher = function(item) {
                     // on query changed
                     if(tmp_query != this.query) {
                         var isEqual = false;
+                        var emailData = null;
                         for(var i = 0; i < emailList.length; i++) {
-                            if(emailList[i].toLowerCase() == this.query.toLowerCase()) {
+                            if(emailList[i].email.toLowerCase() == this.query.toLowerCase()) {
                                 isEqual = true;
+                                loadSavedData(emailList[i]);
                                 break;
                             }
-                        }
-                        if(isEqual) {
-                            loadSavedData();
                         }
 
                         tmp_query = this.query;
@@ -36,27 +40,23 @@ $(function () {
 
                     return ~item.toLowerCase().indexOf(this.query.toLowerCase());
                 };
+
+                var emailNameList = [];
+                for(i = 0; i < emailList.length; i++) {
+                    emailNameList.push(emailList[i].email);
+                }
                 var options = {
-                    source: emailList,
+                    source: emailNameList,
                     minLength: 0,
                     matcher: matcher,
                     updater: updater
                 };
                 $('#txtEmail').typeahead(options);
 
-                function loadSavedData() {
-                    var emailData = null;
-                    for(var i = 0; i < emailSetting.records.length; i++) {
-                        if(tmp_query == emailSetting.records[i].email) {
-                            emailData = emailSetting.records[i];
-                            break;
-                        }
-                    }
-                    if(emailData != null) {
-                        $('#txtTotalSag').val(emailData.totalSag);
-                        $('#txtPerSecond').val(emailData.perSecond);
-                        $('#chkEnabled').prop('checked', emailData.enabled);
-                    }
+                function loadSavedData(emailData) {
+                    $('#txtTotalSag').val(emailData.sag);
+                    $('#txtPerSecond').val(emailData.time);
+                    $('#chkEnabled').prop('checked', emailData.enabled);
                 }
             },
             timeout: 5000, //in milliseconds
@@ -81,14 +81,12 @@ $(function () {
 
                 $('#btnSaveChange').button('loading');
                 // update email setting
+                var data = { email: email, sag: totalSag, time: perSecond, enabled: enabled};
                 $.ajax({
                     type: "POST",
-                    url: "http://www.aaaaa.com",
-                    data: { email: email, totalSag: totalSag, perSecond: perSecond, enabled: enabled},
-                    success: function(){
-
-                    },
-                    dataType: "json",
+                    url: "http://power-monitor-cloud.appspot.com/email",
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
                     timeout: 5000, //in milliseconds
                     success: function(data){
                         showalert('#alertBox', 'success', '<strong>Email Configuration Successful !</strong> ' +
