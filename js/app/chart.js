@@ -15,40 +15,40 @@ $(function () {
                     var average = this.series[0];
                     var chart = this;
 					var time = (new Date()).getTime()-50000;
+                    var latestTime = time;
                     //alert(new Date(time-10000));
 						//source = 'http://toonja606.appspot.com/getdata/';
 					var source = 'http://localhost:5050/rms';
-                    console.log(time);
+                    console.log(latestTime);
                     setInterval(function() {
                         //time = (new Date()).getTime()-500;
 						$.ajax({
-							url : source+"/"+time,
+							url : source+"/"+latestTime,
 							success : function(data) {
 								//console.log(data);
                                 var length = data.rms.length;
-                                var skip = length / 10;
-                                var j;
-								console.log("# of received record: "+length);
+								console.log("# of received record: "+length + "from time" + latestTime);
                                 //console.log("Skip: "+skip);
 								//console.log(data.rms[0].pu1);
-                                if (length > 10) length = 10;
+                                //if (length > 10) length = 10;
                                 for (var i=0;i<length;i++)
                                 {
-                                    j=parseInt(i*skip); 
-                                    var x = (new Date()).getTime(), // current time in UTC time
-                                    pu1 = data.rms[j].pu1/255*100,
-                                    pu2 = data.rms[j].pu2/255*100,
-                                    pu3 = data.rms[j].pu3/255*100,
+                                    //var x = (new Date()).getTime(), // current time in UTC time
+                                    time = data.rms[i].timestamp();
+                                    if time > latestTime
+                                        latestTime = time;
+                                    var pu1 = data.rms[i].pu1/255*100,
+                                    pu2 = data.rms[i].pu2/255*100,
+                                    pu3 = data.rms[i].pu3/255*100,
                                     avg = (pu1+pu2+pu3)/3;
-                                    phase1.addPoint([x, pu1], false, true);
-                                    phase2.addPoint([x, pu2], false, true);
-                                    phase3.addPoint([x, pu3], false, true);
-                                    average.addPoint([x, avg], false, true);
+                                    phase1.addPoint([time, pu1], false, true);
+                                    phase2.addPoint([time, pu2], false, true);
+                                    phase3.addPoint([time, pu3], false, true);
+                                    average.addPoint([time, avg], false, true);
                                     chart.redraw();
                                 }
 							}
 						});
-                        time = (new Date()).getTime()-500;
                     }, 500);
                 }
             }
