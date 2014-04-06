@@ -4,7 +4,8 @@ $(function () {
     $('#emailModal').on('show.bs.modal', function () {
         $.ajax({
             type: 'GET',
-            url: "http://demo7412509.mockable.io/email",
+            // url: "http://demo7412509.mockable.io/email",
+            url: "http://power-monitor-cloud.appspot.com/email",
             success: function(emailSetting){
                 var emailList = [];
                 var tmp_query = '';

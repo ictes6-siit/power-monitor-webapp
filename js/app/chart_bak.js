@@ -14,77 +14,77 @@ $(function () {
                     var phase3 = this.series[3];
                     var average = this.series[0];
                     var chart = this;
+                    var pu1=100,pu2=100,pu3=100,avg=100,x=0;
+                    var d = new Date();
 					var time = (new Date()).getTime();
-                    var pu1,pu2,pu3,avg;
                     var latestTime = time;
-                    var time2;
-                    var dummyTime = time;
-                    //alert(new Date(time-10000));
-                    var source = 'http://toonja606.appspot.com/getdata';
+                    var source = 'http://power-monitor-cloud.appspot.com/rms';
 					// var source = 'http://localhost:5050/rms';
+                    d.setTime(latestTime);
                     console.log(latestTime);
                     setInterval(function() {
-                        time = (new Date()).getTime()-500;
-						console.log("time"+time);
 						$.ajax({
-							url : source,
+							url : source+"/"+time,
 							success : function(data) {
 								//console.log(data);
-                                var length = data.task.length;
-								console.log("# of received record: "+length + "from time" + latestTime);
-                                //console.log("Skip: "+skip);
-								//console.log(data.task[0].pu1);
-                                //if (length > 10) length = 10;
-                                var time = data.task[0].timestamp;
-                                if(time == latestTime)
+                                var length = data.results.rms.length;
+                                // var length = data.rms.length;
+                                d.setTime(time);
+                                console.log(source+"/"+time);
+								console.log("# of received record: "+length + " from time: " + d);
+                                // console.log(" pu1 = "+pu1+" pu2 = "+pu2+" pu3 = "+pu3+" avg = "+avg);
+                                if (length == 0)
                                 {
-                                    dummyTime+=1000;
-                                    console.log("Old data");
-                                    // time2 = (new Date()).getTime();
-                                    phase1.addPoint([dummyTime, pu1], false, true);
-                                    phase2.addPoint([dummyTime, pu2], false, true);
-                                    phase3.addPoint([dummyTime, pu3], false, true);
-                                    average.addPoint([dummyTime, avg], false, true);
-                                    chart.redraw();
-                                    console.log("Generated time: "+dummyTime);
+                                    // for (var i=0;i<3;i++)
+                                    // {
+                                        // time = (new Date()).getTime()+25200000;
+                                        // x = time;
+                                        // d.setTime(x);
+                                        // console.log(d);
+                                        // pu1 = Math.random() * 100,
+                                        // pu2 = Math.random() * 100,
+                                        // pu3 = Math.random() * 100,
+                                        // avg = (pu1+pu2+pu3)/3;
+                                        // phase1.addPoint([x, pu1], false, true);
+                                        // phase2.addPoint([x, pu2], false, true);
+                                        // phase3.addPoint([x, pu3], false, true);
+                                        // average.addPoint([x, avg], false, true);
+                                        // chart.redraw();
+                                    // }
+                                    
                                 }
                                 else
                                 {
-                                    console.log("New data");
-                                    for (var i=length-1;i>=0;i--)
+                                    for (var i=0;i<length;i++)
                                     {
                                         //var x = (new Date()).getTime(), // current time in UTC time
-                                        time2 = data.task[i].timestamp;
-                                        // var time = (new Date()).getTime();
-                                      //  if time > latestTime
-                                        latestTime = time2;
-                                        dummyTime = time2;
-                                        pu1 = data.task[i].pu1;
-                                        if (pu1<=100) pu1 = 100-pu1;
-                                        pu2 = data.task[i].pu2;
-                                        if (pu2<=100) pu2 = 100-pu2;
-                                        pu3 = data.task[i].pu3;
-                                        if (pu3<=100) pu3 = 100-pu3;
-                                        console.log("Time");
+                                        time = data.results.rms[i].timestamp+25200000;
+                                        if(x>=time)
+                                        {
+                                            time++;
+                                            continue;
+                                        }
+                                        x=time;
+                                        d.setTime(x);
+                                        console.log(d);
+                                        pu1 = 100-data.results.rms[i].pu1;//255*100,
+                                        pu2 = 100-data.results.rms[i].pu2;//255*100,
+                                        pu3 = 100-data.results.rms[i].pu3;//255*100,
+                                        // pu1 = 100-data.rms[i].pu1;//255*100,
+                                        // pu2 = 100-data.rms[i].pu2;//255*100,
+                                        // pu3 = 100-data.rms[i].pu3;//255*100,
                                         avg = (pu1+pu2+pu3)/3;
-                                        // console.log("pu1 "+pu1);
-                                        // console.log("pu2 "+pu2);
-                                        // console.log("pu3 "+pu3);
-                                        // console.log("avg "+avg);
-                                        // console.log("time2 "+time2);
-                                        // console.log("lenght "+length)
-                                        phase1.addPoint([time2, pu1], false, true);
-                                        phase2.addPoint([time2, pu2], false, true);
-                                        phase3.addPoint([time2, pu3], false, true);
-                                        average.addPoint([time2, avg], false, true);
+                                        console.log(" time = "+(new Date()).setTime(x));
+                                        phase1.addPoint([x, pu1], false, true);
+                                        phase2.addPoint([x, pu2], false, true);
+                                        phase3.addPoint([x, pu3], false, true);
+                                        average.addPoint([x, avg], false, true);
                                         chart.redraw();
-                                        console.log("Actual Timestamp: "+time2);
                                     }
                                 }
-                                console.log('graph plot!');
-							}
+							}   
 						});
-                    }, 1000);
+                    }, 500);
                 }
             }
         },
@@ -176,7 +176,7 @@ $(function () {
             min: 0,
             max: 120,
             title: {
-                text: '% task'
+                text: '% RMS'
             },
             labels: {
                 align: 'left',
@@ -194,7 +194,16 @@ $(function () {
             verticalAlign: 'bottom'
         },
 
-      
+        tooltip: {
+            formatter: function() {
+                var d = new Date(this.x);
+                return 	Highcharts.dateFormat('%e. %b %H:%M:%S:', this.x)+d.getMilliseconds()+'<br/>'+
+                    '<b style="color:'+ this.points[0].series.color +'">'+ this.points[0].series.name +' - '+ this.points[0].y.toFixed(2) +' %'+'</b><br/>'+
+                    '<b style="color:'+ this.points[1].series.color +'">'+ this.points[1].series.name +' - '+ this.points[1].y.toFixed(2) +' %'+'</b><br/>'+
+                    '<b style="color:'+ this.points[2].series.color +'">'+ this.points[2].series.name +' - '+ this.points[2].y.toFixed(2) +' %'+'</b><br/>'+
+                    '<b style="color:'+ this.points[3].series.color +'">'+ this.points[3].series.name +' - '+ this.points[3].y.toFixed(2) +' %'+'</b><br/>';
+            }
+        },
         plotOptions: {
             series: {
                 cursor: 'pointer',
@@ -228,10 +237,10 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = (new Date()).getTime()+25200000,
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -199; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()
@@ -248,10 +257,10 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = (new Date()).getTime()+25200000,
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -199; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()
@@ -268,10 +277,10 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = (new Date()).getTime()+25200000,
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -199; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()
@@ -288,10 +297,10 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = (new Date()).getTime()+25200000,
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -199; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()

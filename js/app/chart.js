@@ -14,42 +14,77 @@ $(function () {
                     var phase3 = this.series[3];
                     var average = this.series[0];
                     var chart = this;
-					var time = (new Date()).getTime()-50000;
+					var time = (new Date()).getTime();
+                    var pu1,pu2,pu3,avg;
                     var latestTime = time;
+                    var time2;
+                    var dummyTime = time;
                     //alert(new Date(time-10000));
-						//source = 'http://toonja606.appspot.com/getdata/';
-					var source = 'http://localhost:5050/rms';
+                    var source = 'http://toonja606.appspot.com/getdata';
+					// var source = 'http://localhost:5050/rms';
                     console.log(latestTime);
                     setInterval(function() {
-                        //time = (new Date()).getTime()-500;
+                        time = (new Date()).getTime()-500;
+						console.log("time"+time);
 						$.ajax({
-							url : source+"/"+latestTime,
+							url : source,
 							success : function(data) {
 								//console.log(data);
-                                var length = data.rms.length;
+                                var length = data.task.length;
 								console.log("# of received record: "+length + "from time" + latestTime);
                                 //console.log("Skip: "+skip);
-								//console.log(data.rms[0].pu1);
+								//console.log(data.task[0].pu1);
                                 //if (length > 10) length = 10;
-                                for (var i=0;i<length;i++)
+                                var time = data.task[0].timestamp;
+                                if(time == latestTime)
                                 {
-                                    //var x = (new Date()).getTime(), // current time in UTC time
-                                    time = data.rms[i].timestamp();
-                                    if time > latestTime
-                                        latestTime = time;
-                                    var pu1 = data.rms[i].pu1/255*100,
-                                    pu2 = data.rms[i].pu2/255*100,
-                                    pu3 = data.rms[i].pu3/255*100,
-                                    avg = (pu1+pu2+pu3)/3;
-                                    phase1.addPoint([time, pu1], false, true);
-                                    phase2.addPoint([time, pu2], false, true);
-                                    phase3.addPoint([time, pu3], false, true);
-                                    average.addPoint([time, avg], false, true);
+                                    dummyTime+=1000;
+                                    console.log("Old data");
+                                    // time2 = (new Date()).getTime();
+                                    phase1.addPoint([dummyTime, pu1], false, true);
+                                    phase2.addPoint([dummyTime, pu2], false, true);
+                                    phase3.addPoint([dummyTime, pu3], false, true);
+                                    average.addPoint([dummyTime, avg], false, true);
                                     chart.redraw();
+                                    console.log("Generated time: "+dummyTime);
                                 }
+                                else
+                                {
+                                    console.log("New data");
+                                    for (var i=length-1;i>=0;i--)
+                                    {
+                                        //var x = (new Date()).getTime(), // current time in UTC time
+                                        time2 = data.task[i].timestamp;
+                                        // var time = (new Date()).getTime();
+                                      //  if time > latestTime
+                                        latestTime = time2;
+                                        dummyTime = time2;
+                                        pu1 = data.task[i].pu1;
+                                        if (pu1<=100) pu1 = 100-pu1;
+                                        pu2 = data.task[i].pu2;
+                                        if (pu2<=100) pu2 = 100-pu2;
+                                        pu3 = data.task[i].pu3;
+                                        if (pu3<=100) pu3 = 100-pu3;
+                                        console.log("Time");
+                                        avg = (pu1+pu2+pu3)/3;
+                                        // console.log("pu1 "+pu1);
+                                        // console.log("pu2 "+pu2);
+                                        // console.log("pu3 "+pu3);
+                                        // console.log("avg "+avg);
+                                        // console.log("time2 "+time2);
+                                        // console.log("lenght "+length)
+                                        phase1.addPoint([time2, pu1], false, true);
+                                        phase2.addPoint([time2, pu2], false, true);
+                                        phase3.addPoint([time2, pu3], false, true);
+                                        average.addPoint([time2, avg], false, true);
+                                        chart.redraw();
+                                        console.log("Actual Timestamp: "+time2);
+                                    }
+                                }
+                                console.log('graph plot!');
 							}
 						});
-                    }, 500);
+                    }, 1000);
                 }
             }
         },
@@ -78,7 +113,7 @@ $(function () {
                 type: 'all',
                 text: 'All'
             }],
-            inputEnabled: true,
+            inputEnabled: false,
             selected: 0,
             inputDateFormat: '%Y-%m-%d,%H:%M:%S.%L',
             inputEditDateFormat: '%Y-%m-%d,%H:%M:%S.%L',
@@ -100,11 +135,11 @@ $(function () {
             enabled: true
         },
         title: {
-            text: ''
+            text: 'Realtime Power Monitoring System'
         },
 
         subtitle: {
-            text: ''
+            text: 'Data is updated every 1 second'
         },
 
         navigation: {
@@ -139,9 +174,9 @@ $(function () {
 
         yAxis: { // left y axis
             min: 0,
-            max: 100,
+            max: 120,
             title: {
-                text: '% RMS'
+                text: '% task'
             },
             labels: {
                 align: 'left',
@@ -159,16 +194,7 @@ $(function () {
             verticalAlign: 'bottom'
         },
 
-        tooltip: {
-            formatter: function() {
-                var d = new Date(this.x);
-                return 	Highcharts.dateFormat('%e. %b %M:%S:', this.x)+d.getMilliseconds()+'<br/>'+
-                    '<b style="color:'+ this.points[0].series.color +'">'+ this.points[0].series.name +' - '+ this.points[0].y.toFixed(2) +' %'+'</b><br/>'+
-                    '<b style="color:'+ this.points[1].series.color +'">'+ this.points[1].series.name +' - '+ this.points[1].y.toFixed(2) +' %'+'</b><br/>'+
-                    '<b style="color:'+ this.points[2].series.color +'">'+ this.points[2].series.name +' - '+ this.points[2].y.toFixed(2) +' %'+'</b><br/>'+
-                    '<b style="color:'+ this.points[3].series.color +'">'+ this.points[3].series.name +' - '+ this.points[3].y.toFixed(2) +' %'+'</b><br/>';
-            }
-        },
+      
         plotOptions: {
             series: {
                 cursor: 'pointer',
@@ -208,7 +234,7 @@ $(function () {
                 for (i = -99; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
-                        y: 0//Math.random()
+                        y: 100//Math.random()
                     });
                 }
                 return data;
@@ -228,7 +254,7 @@ $(function () {
                 for (i = -99; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
-                        y: 0//Math.random()
+                        y: 100//Math.random()
                     });
                 }
                 return data;
@@ -248,7 +274,7 @@ $(function () {
                 for (i = -99; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
-                        y: 0//Math.random()
+                        y: 100//Math.random()
                     });
                 }
                 return data;
@@ -268,7 +294,7 @@ $(function () {
                 for (i = -99; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
-                        y: 0//Math.random()
+                        y: 100//Math.random()
                     });
                 }
                 return data;
