@@ -3,7 +3,7 @@ $(function() {
     var time = date.getTime();
 	// See source code from the JSONP handler at https://github.com/highslide-software/highcharts.com/blob/master/samples/data/from-sql.php
 	// $.getJSON('http://www.highcharts.com/samples/data/from-sql.php?callback=?', function(data) {
-    $.getJSON('http://toonja606.appspot.com/getdata/0/'+time, function(data) {
+    $.getJSON('http://power-monitor-cloud.appspot.com/rms/0/'+time, function(data) {
 		
 		// Add a null value for the end date 
 		data = [].concat(data, [[100, 100, 100, time]]);
@@ -87,7 +87,7 @@ function afterSetExtremes(e) {
 		chart = $('#container').highcharts();
 		
 	chart.showLoading('Loading data from server...');
-	$.getJSON('http://toonja606.appspot.com/getdata/'+Math.round(e.min)+'/'+Math.round(e.max), function(data) {
+	$.getJSON('http://power-monitor-cloud.appspot.com/rms/'+Math.round(e.min)+'/'+Math.round(e.max), function(data) {
 		
 		chart.series[0].setData(data);
 		chart.hideLoading();

@@ -20,7 +20,7 @@ $(function () {
                     var time2;
                     var dummyTime = time;
                     //alert(new Date(time-10000));
-                    var source = 'http://toonja606.appspot.com/getdata';
+                    var source = 'http://power-monitor-cloud.appspot.com/rms';
 					// var source = 'http://localhost:5050/rms';
                     console.log(latestTime);
                     setInterval(function() {
@@ -30,12 +30,12 @@ $(function () {
 							url : source,
 							success : function(data) {
 								//console.log(data);
-                                var length = data.task.length;
+                                var length = data.results.rms.length;
 								console.log("# of received record: "+length + "from time" + latestTime);
                                 //console.log("Skip: "+skip);
 								//console.log(data.task[0].pu1);
                                 //if (length > 10) length = 10;
-                                var time = data.task[0].timestamp;
+                                var time = data.results.rms[0].timestamp;
                                 if(time == latestTime)
                                 {
                                     dummyTime+=1000;
@@ -54,16 +54,16 @@ $(function () {
                                     for (var i=length-1;i>=0;i--)
                                     {
                                         //var x = (new Date()).getTime(), // current time in UTC time
-                                        time2 = data.task[i].timestamp;
+                                        time2 = data.results.rms[i].timestamp;
                                         // var time = (new Date()).getTime();
                                       //  if time > latestTime
                                         latestTime = time2;
                                         dummyTime = time2;
-                                        pu1 = data.task[i].pu1;
+                                        pu1 = data.results.rms[i].pu1;
                                         if (pu1<=100) pu1 = 100-pu1;
-                                        pu2 = data.task[i].pu2;
+                                        pu2 = data.results.rms[i].pu2;
                                         if (pu2<=100) pu2 = 100-pu2;
-                                        pu3 = data.task[i].pu3;
+                                        pu3 = data.results.rms[i].pu3;
                                         if (pu3<=100) pu3 = 100-pu3;
                                         console.log("Time");
                                         avg = (pu1+pu2+pu3)/3;
