@@ -20,8 +20,8 @@ $(function () {
                     var time2;
                     var dummyTime = time;
                     //alert(new Date(time-10000));
-                    // var source = 'http://toonja606.appspot.com/getdata';
-					var source = 'http://localhost:5050/rms.json?count=5';
+                    var source = 'http://power-monitor-cloud.appspot.com/rms';
+					// var source = 'http://localhost:5050/rms';
                     console.log(latestTime);
                     setInterval(function() {
                         time = (new Date()).getTime()-500;
