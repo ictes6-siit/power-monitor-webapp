@@ -15,13 +15,13 @@ $(function () {
                     var average = this.series[0];
                     var chart = this;
 					var time = (new Date()).getTime();
-                    var pu1,pu2,pu3,avg;
+                    var pu1=100,pu2=100,pu3=100,avg=100;
                     var latestTime = time;
                     var time2;
                     var dummyTime = time;
                     //alert(new Date(time-10000));
                     // var source = 'http://toonja606.appspot.com/getdata';
-					var source = 'http://localhost:5050/rms.json?count=5';
+					var source = 'http://localhost:5050/rms.json?count=5&asc=false';
                     console.log(latestTime);
                     setInterval(function() {
                         time = (new Date()).getTime()-500;
@@ -36,7 +36,7 @@ $(function () {
 								//console.log(data.task[0].pu1);
                                 //if (length > 10) length = 10;
                                 var time = data.results.rms[0].timestamp;
-                                if(time == latestTime)
+                                if(time <= latestTime)
                                 {
                                     dummyTime+=1000;
                                     console.log("Old data");
@@ -46,7 +46,7 @@ $(function () {
                                     phase3.addPoint([dummyTime, pu3], false, true);
                                     average.addPoint([dummyTime, avg], false, true);
                                     chart.redraw();
-                                    console.log("Generated time: "+dummyTime);
+                                    //console.log("Generated time: "+dummyTime);
                                 }
                                 else
                                 {
@@ -78,7 +78,7 @@ $(function () {
                                         phase3.addPoint([time2, pu3], false, true);
                                         average.addPoint([time2, avg], false, true);
                                         chart.redraw();
-                                        console.log("Actual Timestamp: "+time2);
+                                        //console.log("Actual Timestamp: "+time2);
                                     }
                                 }
                                 console.log('graph plot!');
@@ -97,18 +97,6 @@ $(function () {
                 count: 5,
                 type: 'minute',
                 text: '5M'
-            }, {
-                count: 30,
-                type: 'minute',
-                text: '30M'
-            }, {
-                count: 1,
-                type: 'hour',
-                text: '1H'
-            }, {
-                count: 1,
-                type: 'day',
-                text: '1D'
             }, {
                 type: 'all',
                 text: 'All'
@@ -231,7 +219,7 @@ $(function () {
                     time = (new Date()).getTime(),
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -999; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()
@@ -251,7 +239,7 @@ $(function () {
                     time = (new Date()).getTime(),
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -999; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()
@@ -271,7 +259,7 @@ $(function () {
                     time = (new Date()).getTime(),
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -999; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()
@@ -291,7 +279,7 @@ $(function () {
                     time = (new Date()).getTime(),
                     i;
 
-                for (i = -99; i <= 0; i++) {
+                for (i = -999; i <= 0; i++) {
                     data.push({
                         x: time + i * 1000,
                         y: 100//Math.random()

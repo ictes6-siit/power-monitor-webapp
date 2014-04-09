@@ -1,0 +1,200 @@
+$(function() {
+	var date = new Date();
+    var time = date.getTime();
+    // var source = 'http://localhost:5050/rms.json?start=0&end='+time;
+    var source = 'http://localhost:5050/rms.json?count=500&asc=false';
+    // var source = 'http://www.highcharts.com/samples/data/from-sql.php?callback=?';
+	// See source code from the JSONP handler at https://github.com/highslide-software/highcharts.com/blob/master/samples/data/from-sql.php
+	// $.getJSON('http://www.highcharts.com/samples/data/from-sql.php?callback=?', function(data) {
+    
+        
+		// Add a null value for the end date WHY?
+		// data = [].concat(data, [[100, 100, 100, 0]]);
+		
+		// create the chart
+    $('#chart2').highcharts('StockChart', {
+        chart : {
+            type: 'spline',
+            zoomType: 'x',
+            events:{                
+                load: function(){
+                    alert('Chart Loading');
+                    $.getJSON(source, function(data) {
+            
+                        data = data.results.rms;
+                        console.log(data);
+                    
+                        var phase1 = this.series[1];
+                        var phase2 = this.series[2];
+                        var phase3 = this.series[3];
+                        var average = this.series[0];
+                        var length = data.length;
+                        var chart = this;
+                        var pu1,pu2,pu3,avg,time;
+                        for(var i=0;i<length;i++)
+                        {
+                            pu1=data[i].pu1;
+                            pu2=data[i].pu2;
+                            pu3=data[i].pu3;
+                            avg = (pu1+pu2+pu3)/3;
+                            time = data[i].timestamp;
+                            phase1.addPoint([time, pu1], false, false);
+                            phase2.addPoint([time, pu2], false, false);
+                            phase3.addPoint([time, pu3], false, false);
+                            average.addPoint([time, avg], false, false);
+                        }
+                        chart.redraw();
+                        console.log("Finish initialize the chart");
+                    }
+                }
+            }
+        },
+
+        navigator : {
+            adaptToUpdatedData: false,
+            series : {
+                data : data
+            }
+        },
+
+        scrollbar: {
+            liveRedraw: false
+        },
+        
+        title: {
+            text: 'Overall Power Level Since the Begining of Time until'+ date.toDateString()
+        },
+        
+        subtitle: {
+            text: ''
+        },
+        
+        rangeSelector : {
+            buttons: [{
+                type: 'minute',
+                count: 1,
+                text: '1min'
+            },{
+                type: 'minute',
+                count: 30,
+                text: '30min'
+            },{
+                type: 'hour',
+                count: 1,
+                text: '1h'
+            }, {
+                type: 'day',
+                count: 1,
+                text: '1d'
+            }, {
+                type: 'month',
+                count: 1,
+                text: '1m'
+            }, {
+                type: 'year',
+                count: 1,
+                text: '1y'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: true,
+            selected : 2
+        },
+        
+        xAxis : {
+            events : {
+                afterSetExtremes : afterSetExtremes
+            },
+            minRange:  60000 // one minute
+        },
+        series: [
+            {
+                name: 'Average',
+                lineWidth: 4,
+                marker: {
+                    radius: 4
+                },
+                data: (function() {
+                    var data = [];        
+                    data.push({x: 0,y: 100});
+                    return data;
+                })()
+            },{
+                name: 'Phase 1',
+                lineWidth: 4,
+                marker: {
+                    radius: 4
+                },
+                data: (function() {
+                    var data = [];        
+                    data.push({x: 0,y: 100});
+                    return data;
+                })()
+            }, {
+                name: 'Phase 2',
+                lineWidth: 4,
+                marker: {
+                    radius: 4
+                },
+               data: (function() {
+                    var data = [];        
+                    data.push({x: 0,y: 100});
+                    return data;
+                })()
+            }, {
+                name: 'Phase 3',
+                lineWidth: 4,
+                marker: {
+                    radius: 4
+                },
+                data: (function() {
+                    var data = [];        
+                    data.push({x: 0,y: 100});
+                    return data;
+                })()
+            }
+        ]		
+    });
+});
+
+
+/**
+ * Load new data depending on the selected min and max
+ */
+function afterSetExtremes(e) {
+
+	var currentExtremes = this.getExtremes(),
+		range = e.max - e.min,
+		chart = $('#chart2').highcharts();
+	
+	chart.showLoading('Loading data from server...');
+    alert(Math.round(e.min)+' to '+Math.round(e.max));
+    var source = 'http://localhost:5050/rms.json?start='+Math.round(e.min)+'&end='+Math.round(e.max);
+	$.getJSON(source, function(data) {	
+        data = data.results.rms;
+        
+        for(var i=0;i<4;i++)
+            chart.series[i]=[];
+            
+        var phase1 = chart.series[1];
+        var phase2 = chart.series[2];
+        var phase3 = chart.series[3];
+        var average = chart.series[0];
+        var length = data.length;
+        var pu1,pu2,pu3,avg,time;
+        for(var i=0;i<length;i++)
+        {
+            pu1=data[i].pu1;
+            pu2=data[i].pu2;
+            pu3=data[i].pu3;
+            avg = (pu1+pu2+pu3)/3;
+            time = data[i].timestamp;
+            phase1.addPoint([time, pu1], false, false);
+            phase2.addPoint([time, pu2], false, false);
+            phase3.addPoint([time, pu3], false, false);
+            average.addPoint([time, avg], false, false);
+        }
+		chart.hideLoading();
+	});
+}
