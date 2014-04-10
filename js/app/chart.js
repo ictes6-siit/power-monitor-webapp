@@ -206,7 +206,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = 1394437519256,//date.getTime(),
+                    time = date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {
@@ -226,7 +226,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = 1394437519256,//date.getTime(),
+                    time = date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {
@@ -246,7 +246,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = 1394437519256,//date.getTime(),
+                    time = date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {
@@ -266,7 +266,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = 1394437519256,//date.getTime(),
+                    time = date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {

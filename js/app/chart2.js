@@ -51,11 +51,9 @@ $(function () {
             avgall[i]*=100;
             avgall[i]=Math.round(avgall[i]);
             avgall[i]/=100;
-            max[i]/=length;
             max[i]*=100;
             max[i]=Math.round(max[i]);
             max[i]/=100;
-            min[i]/=length;
             min[i]*=100;
             min[i]=Math.round(min[i]);
             min[i]/=100;
@@ -206,7 +204,7 @@ function afterSetExtremes (e) {
     var phase2 = [];
     var phase3 = [];
     var average = [];
-    var pu1=100,pu2=100,pu3=100,avg=100,max=[0,0,0],min=[100,100,100],avgall=[0,0,0],total_sag=[0,0,0];
+    
     chart.showLoading('Loading data from server...');
     // alert(Math.round(e.min)+' to '+Math.round(e.max));
     console.log('setExtremes called');
@@ -215,9 +213,10 @@ function afterSetExtremes (e) {
         url : source,
         success : function(data) {
             chart.hideLoading();
+            var pu1=100,pu2=100,pu3=100,avg=100,max=[0,0,0],min=[100,100,100],avgall=[0,0,0],total_sag=[0,0,0];
             data = data.results.rms;
             var length = data.length;
-            // alert('new data length: ' + length );
+            alert('new data length: ' + length );
             for(var i=0;i<length;i++){
                 time2 = data[i].timestamp;
                 latestTime = time2;
@@ -259,11 +258,9 @@ function afterSetExtremes (e) {
                 avgall[i]*=100;
                 avgall[i]=Math.round(avgall[i]);
                 avgall[i]/=100;
-                max[i]/=length;
                 max[i]*=100;
                 max[i]=Math.round(max[i]);
                 max[i]/=100;
-                min[i]/=length;
                 min[i]*=100;
                 min[i]=Math.round(min[i]);
                 min[i]/=100;
