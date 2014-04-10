@@ -1,5 +1,5 @@
 $(function () {
-
+    var date = new Date();
     $('#chart').highcharts('StockChart', {
         chart: {
             type: 'spline',
@@ -14,7 +14,7 @@ $(function () {
                     var phase3 = this.series[3];
                     var average = this.series[0];
                     var chart = this;
-					var time = (new Date()).getTime();
+					var time = 1394437519256;//(new Date()).getTime();
                     var pu1=100,pu2=100,pu3=100,avg=100;
                     var latestTime = time;
                     var time2;
@@ -53,32 +53,21 @@ $(function () {
                                     console.log("New data");
                                     for (var i=length-1;i>=0;i--)
                                     {
-                                        //var x = (new Date()).getTime(), // current time in UTC time
                                         time2 = data.results.rms[i].timestamp;
-                                        // var time = (new Date()).getTime();
-                                      //  if time > latestTime
                                         latestTime = time2;
-                                        dummyTime = time2;
                                         pu1 = data.results.rms[i].pu1;
-                                        if (pu1<=100) pu1 = 100-pu1;
+                                        // if (pu1<=100) pu1 = 100-pu1;
                                         pu2 = data.results.rms[i].pu2;
-                                        if (pu2<=100) pu2 = 100-pu2;
+                                        // if (pu2<=100) pu2 = 100-pu2;
                                         pu3 = data.results.rms[i].pu3;
-                                        if (pu3<=100) pu3 = 100-pu3;
+                                        // if (pu3<=100) pu3 = 100-pu3;
                                         console.log("Time");
                                         avg = (pu1+pu2+pu3)/3;
-                                        // console.log("pu1 "+pu1);
-                                        // console.log("pu2 "+pu2);
-                                        // console.log("pu3 "+pu3);
-                                        // console.log("avg "+avg);
-                                        // console.log("time2 "+time2);
-                                        // console.log("lenght "+length)
                                         phase1.addPoint([time2, pu1], false, true);
                                         phase2.addPoint([time2, pu2], false, true);
                                         phase3.addPoint([time2, pu3], false, true);
                                         average.addPoint([time2, avg], false, true);
                                         chart.redraw();
-                                        //console.log("Actual Timestamp: "+time2);
                                     }
                                 }
                                 console.log('graph plot!');
@@ -88,6 +77,7 @@ $(function () {
                 }
             }
         },
+        
         rangeSelector: {
             buttons: [{
                 count: 1,
@@ -164,7 +154,7 @@ $(function () {
             min: 0,
             max: 120,
             title: {
-                text: '% task'
+                text: '%RMS'
             },
             labels: {
                 align: 'left',
@@ -216,7 +206,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = 1394437519256,//date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {
@@ -236,7 +226,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = 1394437519256,//date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {
@@ -256,7 +246,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = 1394437519256,//date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {
@@ -276,7 +266,7 @@ $(function () {
             data: (function() {
                 // generate an array of random data
                 var data = [],
-                    time = (new Date()).getTime(),
+                    time = 1394437519256,//date.getTime(),
                     i;
 
                 for (i = -999; i <= 0; i++) {

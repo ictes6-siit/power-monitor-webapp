@@ -40,8 +40,8 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="index.html" ><span class="glyphicon glyphicon-cog"></span> Realtime Monitoring</a></li>
-            <li><a href="lazy.html" ><span class="glyphicon glyphicon-cog"></span> Overall Asynchronous Monitoring</a></li>
-            <li><a href="#" data-toggle="modal" data-target="#emailModal"><span class="glyphicon glyphicon-cog"></span> Email Notification Setting</a></li>
+            <li><a href="lazy.html" ><span class="glyphicon glyphicon-cog"></span> Statistical Analysis</a></li>
+            <li><a href="#" data-toggle="modal" data-target="#emailModal"><span class="glyphicon glyphicon-cog"></span> Email Notification</a></li>
             <li><a href="#" data-toggle="modal" data-target="#helpModal"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
           </ul>
 		  <!--
@@ -60,13 +60,59 @@
         <div class="main">
           <!-- <h1 class="page-header">Voltage Sag Logs</h1> -->
 
+         
           <div class="row placeholders">
             <div id="chart2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
           </div>
-<!-- 
-          <div class="row placeholders">
-            <div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-          </div> -->
+          
+          <h2 class="sub-header">Voltage Sag Summary <small>(For selected range)</small></h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Phase 1</th>
+                  <th>Phase 2</th>
+                  <th>Phase 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Amount of Sag</td>
+                  <td id="count0">N/A</td>
+                  <td id="count1">N/A</td>
+                  <td id="count2">N/A</td>
+                </tr>
+                <tr>
+                    <td>Max Value*</td>
+                    <td id="max0">N/A</td>
+                    <td id="max1">N/A</td>
+                    <td id="max2">N/A</td>
+                </tr>
+                <tr>
+                    <td>Min Value*</td>
+                    <td id="min0">N/A</td>
+                    <td id="min1">N/A</td>
+                    <td id="min2">N/A</td>
+                </tr>
+                <tr>
+                    <td>Average</td>
+                    <td id="avg0">N/A</td>
+                    <td id="avg1">N/A</td>
+                    <td id="avg2">N/A</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div = id="footer">
+              <div class="container">
+                  <p style="color:gray;font-size:12px;text-align:left;">Max and Min value are averaged by the following rules:</p>
+                  <p style="color:gray;font-size:12px;text-align:left;">range < 2 days: data is averaged every minute</p>
+                  <p style="color:gray;font-size:12px;text-align:left;">2 days < range < 1 month: data is averaged every hour</p>
+                  <p style="color:gray;font-size:12px;text-align:left;">1 month < range < 1 year: data is averaged every day</p>
+                  <p style="color:gray;font-size:12px;text-align:left;">range > 1 year: data is average every month</p>
+              </div>
+          </div>
     <!-- Modal Zone
     ========================================================== -->
     <!--Email Setting Modal-->
@@ -96,20 +142,13 @@
                                 </div><!-- /input-group -->
                                 <div id="wrapTotalSag" class="form-group">
                                     <!--<span class="input-group-addon">Total Sag&nbsp;&nbsp;&nbsp;</span>-->
-                                    <label for="txtTotalSag" class="col-sm-3 control-label">Total Sag</label>
+                                    <label for="txtTotalSag" class="col-sm-3 control-label">%RMS</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="txtTotalSag" class="form-control" data-validation="required number" data-validation-allowing="positive">
                                     </div>
                                     <!--<span class="input-group-addon">times&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>-->
                                 </div>
-                                <div id="wrapPerSecond" class="form-group">
-                                    <!--<span class="input-group-addon">Per Second</span>-->
-                                    <label for="txtPerSecond" class="col-sm-3 control-label">Per Second</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="txtPerSecond" class="form-control" data-validation="required number" data-validation-allowing="positive">
-                                    </div>
-                                    <!--<span class="input-group-addon">seconds</span>-->
-                                </div>
+                                
                                 <div id="wrapEnabled" class="form-group">
                                     <!--<span class="input-group-addon">Per Second</span>-->
                                     <label for="txtPerSecond" class="col-sm-3 control-label"></label>

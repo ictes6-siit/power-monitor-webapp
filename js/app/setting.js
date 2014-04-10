@@ -4,7 +4,7 @@ $(function () {
     $('#emailModal').on('show.bs.modal', function () {
         $.ajax({
             type: 'GET',
-            url: "http://power-monitor-cloud.appspot.com/email",
+            url: "http://localhost:5050/email",
             success: function(emailSetting){
                 var emailList = [];
                 var tmp_query = '';
@@ -55,7 +55,7 @@ $(function () {
 
                 function loadSavedData(emailData) {
                     $('#txtTotalSag').val(emailData.sag);
-                    $('#txtPerSecond').val(emailData.time);
+                    // $('#txtPerSecond').val(emailData.time);
                     $('#chkEnabled').prop('checked', emailData.enabled);
                 }
             },
@@ -75,22 +75,23 @@ $(function () {
             onSuccess : function($form) {
                 var email = $('#txtEmail').val();
                 var totalSag = $('#txtTotalSag').val();
-                var perSecond = $('#txtPerSecond').val();
+                // var perSecond = $('#txtPerSecond').val();
                 var enabled = $('#chkEnabled').prop('checked');
-                console.log(email + totalSag + perSecond + enabled);
+                console.log(email + totalSag + enabled);
 
                 $('#btnSaveChange').button('loading');
                 // update email setting
-                var data = { email: email, sag: totalSag, time: perSecond, enabled: enabled};
+                var data = { email: email, sag: totalSag, enabled: enabled};
                 $.ajax({
                     type: "POST",
-                    url: "http://power-monitor-cloud.appspot.com/email",
+                    // url: "http://power-monitor-cloud.appspot.com/email",
+                    url: "http://localhost:5050/email",
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8",
                     timeout: 5000, //in milliseconds
                     success: function(data){
                         showalert('#alertBox', 'success', '<strong>Email Configuration Successful !</strong> ' +
-                            'You will receive the message after the occurrence of sag according to your specified settings');
+                            'You will receive the message when the %RMS is lower than your specified settings');
                         $('#emailModal').modal('hide');
                     },
                     error: function(x, t, m) {
